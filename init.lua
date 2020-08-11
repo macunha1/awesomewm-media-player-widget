@@ -36,15 +36,15 @@ function MediaPlayer:init(args)
 		end,
 	}
 
-    self.dbus = proxy.monitored.new({
-        bus       = proxy.Bus.SESSION,
-        name      = "org.mpris.MediaPlayer2." .. args.name or "spotify",
-        path      = "/org/mpris/MediaPlayer2",
-        interface = "org.mpris.MediaPlayer2.Player"
-    })
+	self.dbus = proxy.monitored.new({
+		bus       = proxy.Bus.SESSION,
+		name      = "org.mpris.MediaPlayer2." .. args.name or "spotify",
+		path      = "/org/mpris/MediaPlayer2",
+		interface = "org.mpris.MediaPlayer2.Player"
+	})
 
-    -- Higher refresh_rate == less CPU requirements
-    -- Lower refresh_rate == better Widget response time
+	-- Higher refresh_rate == less CPU requirements
+	-- Lower refresh_rate == better Widget response time
 	self:watch(args.refresh_rate or 3)
 	self:signal()
 
@@ -69,18 +69,18 @@ function MediaPlayer:update_widget_icon(output)
 end
 
 function MediaPlayer:update_widget_text(output)
-    self.widget:set_text(self:escape_xml(output))
-    self.widget:set_visible(true)
+	self.widget:set_text(self:escape_xml(output))
+	self.widget:set_visible(true)
 end
 
 function MediaPlayer:hide_widget()
-    self.widget:set_text('Media Player | Offline')
-    self.widget:set_visible(false)
+	self.widget:set_text('Media Player | Offline')
+	self.widget:set_visible(false)
 end
 
 function MediaPlayer:info()
   if not self.dbus.is_connected then
-    return {}
+	return {}
   end
 
   local metadata = self.dbus:Get(self.dbus.interface, "Metadata")
@@ -88,12 +88,12 @@ function MediaPlayer:info()
 
   local artists = metadata["xesam:artist"]
   if type(artists) == "table" then
-    artists = table.concat(artists, ", ")
+	artists = table.concat(artists, ", ")
   end
 
   local info = {
-    album = metadata["xesam:album"],
-    title = metadata["xesam:title"],
+	album = metadata["xesam:album"],
+	title = metadata["xesam:title"],
 	artists = artists,
 	status = status
   }
@@ -104,18 +104,18 @@ end
 function MediaPlayer:watch(refresh_rate)
 	local update_widget = function()
 		local info = self:info()
-        if not info["status"] then
-            self:hide_widget()
-        else
-            self:update_widget_icon(info["status"])
-            self:update_widget_text(
-                string.format(
-                    "%s | %s",
-                    info.artists,
-                    info.title
-                )
-            )
-        end
+		if not info["status"] then
+			self:hide_widget()
+		else
+			self:update_widget_icon(info["status"])
+			self:update_widget_text(
+				string.format(
+					"%s | %s",
+					info.artists,
+					info.title
+				)
+			)
+		end
 	end
 
 	helpers.newtimer("media-player", refresh_rate, update_widget)
