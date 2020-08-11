@@ -10,7 +10,9 @@ plugin](https://github.com/hoyon/mpv-mpris)
 \* Pure Lua except for [Playerctl's][playerctl] sub-shell invocations.
    TODO: Migrate to Lua D-Bus proxy
 
-![Screenshot](/screenshot.png?raw=true "Screenshot")
+<p align="center">
+<span><img src="/screenshot.png?raw=true" alt="Media Player Screenshot" /></span>
+</p>
 
 ## Installation
 
@@ -19,7 +21,7 @@ The requirements for this widget are:
    connections with D-Bus interface to read data regarding current playing music
    and artist to fill the widget. Lua D-Bus proxy is available [at Luarocks.](https://luarocks.org/modules/stefano-m/dbus_proxy)
    Further installation info [available here](https://github.com/stefano-m/lua-dbus_proxy#installation)
-   
+
  * [Playerctl][playerctl] interacts with the media player using mouse gestures
    to play, pause and change to next and previous "content". Playerctl is a
    Generic MPRIS D-Bus controller. Mouse scroll up and down changes the
@@ -52,7 +54,7 @@ git submodule sync --recursive .
 ### Usage
 
 Lastly, import the plugin into your `rc.lua`, configure according to your style
-and _Keep on Rockin'_:
+and _keep on Rollin'_:
 
 ```lua
 -- load the widget code
