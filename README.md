@@ -1,14 +1,10 @@
 <h1 align="center">AwesomeWM Media Player Widget</h1>
 
-Pure Lua* implementation of a Media Player Widget, supports any media player
-complaint with [MPRIS D-Bus interface](https://specifications.freedesktop.org/mpris-spec/latest/)
-specification.
+Pure Lua implementation of a Media Player Widget, supports any media player
+complaint with [MPRIS D-Bus MediaPlayer2.Player interface](https://specifications.freedesktop.org/mpris-spec/2.2/Player_Interface.html)
 
 Some examples are: mpd, vlc, audacious, bmp, xmms2, spotify and [mpv with a
 plugin](https://github.com/hoyon/mpv-mpris)
-
-\* Pure Lua except for [Playerctl's][playerctl] sub-shell invocations.
-   TODO: Migrate to Lua D-Bus proxy
 
 <p align="center">
 <span><img src="/screenshot.png?raw=true" alt="Media Player Screenshot" /></span>
@@ -16,16 +12,11 @@ plugin](https://github.com/hoyon/mpv-mpris)
 
 ## Installation
 
-The requirements for this widget are:
- * [Lua D-Bus Proxy](https://github.com/stefano-m/lua-dbus_proxy) handles
-   connections with D-Bus interface to read data regarding current playing music
-   and artist to fill the widget. Lua D-Bus proxy is available [at Luarocks.](https://luarocks.org/modules/stefano-m/dbus_proxy)
-   Further installation info [available here](https://github.com/stefano-m/lua-dbus_proxy#installation)
-
- * [Playerctl][playerctl] interacts with the media player using mouse gestures
-   to play, pause and change to next and previous "content". Playerctl is a
-   Generic MPRIS D-Bus controller. Mouse scroll up and down changes the
-   "content". NOTE: "content" == music/video/media.
+[Lua D-Bus Proxy](https://github.com/stefano-m/lua-dbus_proxy) handles
+connections with D-Bus interface to read data regarding current playing music
+and artist to fill the widget. Lua D-Bus proxy is available [at
+Luarocks.](https://luarocks.org/modules/stefano-m/dbus_proxy)
+Further installation info [available here](https://github.com/stefano-m/lua-dbus_proxy#installation)
 
 Drop the plugin code into your AwesomeWM configuration folder. e.g.:
 
@@ -68,7 +59,7 @@ local spotify_widget = media_player({
     },
     font         = theme.font,
     name         = "spotify", -- target media player
-    refresh_rate = 0.3
+    refresh_rate = 0.3 -- interval between widget update calls
 }).widget
 
 fake.wibar:set {
@@ -88,5 +79,3 @@ By default the widget hides itself when no data regarding a media player is
 found through MPRIS D-Bus interface. In case you're planning to inspect many at
 the same time, it's possible to create many instances of the widget
 (`media_player`) and attach to your wibar.
-
-[playerctl]: https://github.com/altdesktop/playerctl

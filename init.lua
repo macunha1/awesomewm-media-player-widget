@@ -121,7 +121,7 @@ function MediaPlayer:watch(refresh_rate)
 	helpers.newtimer("media-player", refresh_rate, update_widget)
 end
 
-function MediaPlayer:exec(command, callback)
+function MediaPlayer:signal()
 	local spawn_update = function()
 		awful.spawn.easy_async(
 			function() self:info() end,
@@ -130,20 +130,28 @@ function MediaPlayer:exec(command, callback)
 		end)
 	end
 
-	awful.spawn.easy_async(command, callback or spawn_update)
-end
-
-function MediaPlayer:signal()
-	--- Adds the following mouse actions:
-	--  - button 1: left click  - play/pause
-	--  - button 4: scroll up   - next song
-	--  - button 5: scroll down - previous song
-	
-	self.widget:buttons(awful.util.table.join(
-		awful.button({}, 1, function() self:exec("playerctl play-pause", _) end),
-		awful.button({}, 4, function() self:exec("playerctl next", _) end),
-		awful.button({}, 5, function() self:exec("playerctl previous", _) end)
-	))
+	self.widget:buttons(
+		awful.util.table.join(
+			awful.button(
+				{}, 1, -- button 1: left click  - play/pause
+				function()
+					awful.spawn.easy_async(self.dbus:PlayPause(), spawn_update)
+				end
+			),
+			awful.button(
+				{}, 4, -- button 4: scroll up   - next song
+				function()
+					awful.spawn.easy_async(self.dbus:Next(), spawn_update)
+				end
+			),
+			awful.button(
+				{}, 5, -- button 5: scroll down - previous song
+				function()
+					awful.spawn.easy_async(self.dbus:Previous(), spawn_update)
+				end
+			)
+		)
+	)
 end
 
 return setmetatable(MediaPlayer, { __call = MediaPlayer.new, })
