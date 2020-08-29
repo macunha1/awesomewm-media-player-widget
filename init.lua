@@ -16,7 +16,7 @@ function MediaPlayer:init(args)
 		pause   = args.pause_icon or beautiful.pause
 	}
 	self.font   = args.font       or beautiful.font
-	
+
 	self.widget = wibox.widget {
 		{
 			id = "icon",
@@ -104,17 +104,21 @@ end
 function MediaPlayer:watch(refresh_rate)
 	local update_widget = function()
 		local info = self:info()
+		-- Status unavailable? Media Player isn't active, hide the widget
 		if not info["status"] then
 			self:hide_widget()
 		else
-			self:update_widget_icon(info["status"])
-			self:update_widget_text(
-				string.format(
-					"%s | %s",
-					info.artists,
-					info.title
+			if not (info.artists == nil or info.title == nil) then
+				-- Change the artist and title fields in case they aren't nil
+				self:update_widget_icon(info["status"])
+				self:update_widget_text(
+					string.format(
+						"%s | %s",
+						info.artists,
+						info.title
+					)
 				)
-			)
+			end
 		end
 	end
 
