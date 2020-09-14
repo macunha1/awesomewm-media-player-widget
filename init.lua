@@ -11,13 +11,15 @@ function MediaPlayer:new(args)
 end
 
 function MediaPlayer:init(args)
-	self.icons  = args.icons      or {
-		play    = args.play_icon  or beautiful.play,
-		pause   = args.pause_icon or beautiful.pause
+	self.font  = args.font or beautiful.font
+	self.icons = args.icons or {
+		play  = args.play_icon  or beautiful.play,
+		pause = args.pause_icon or beautiful.pause,
+		stop  = args.stop_icon  or beautiful.stop
 	}
-	self.font   = args.font       or beautiful.font
 
-	self.widget = wibox.widget {
+	self.autohide = args.autohide == nil
+	self.widget   = wibox.widget {
 		{
 			id = "icon",
 			widget = wibox.widget.imagebox,
@@ -74,31 +76,32 @@ function MediaPlayer:update_widget_text(output)
 end
 
 function MediaPlayer:hide_widget()
-	self.widget:set_text('Media Player | Offline')
-	self.widget:set_visible(false)
+	self.widget:set_text('Offline')
+	self.widget:set_status(self.icons.stop)
+	self.widget:set_visible(not self.autohide)
 end
 
 function MediaPlayer:info()
-  if not self.dbus.is_connected then
-	return {}
-  end
+	if not self.dbus.is_connected then
+		return {}
+	end
 
-  local metadata = self.dbus:Get(self.dbus.interface, "Metadata")
-  local status   = self.dbus:Get(self.dbus.interface, "PlaybackStatus")
+	local metadata = self.dbus:Get(self.dbus.interface, "Metadata")
+	local status   = self.dbus:Get(self.dbus.interface, "PlaybackStatus")
 
-  local artists = metadata["xesam:artist"]
-  if type(artists) == "table" then
-	artists = table.concat(artists, ", ")
-  end
+	local artists = metadata["xesam:artist"]
+	if type(artists) == "table" then
+		artists = table.concat(artists, ", ")
+	end
 
-  local info = {
-	album = metadata["xesam:album"],
-	title = metadata["xesam:title"],
-	artists = artists,
-	status = status
-  }
+	local info = {
+		album = metadata["xesam:album"],
+		title = metadata["xesam:title"],
+		artists = artists,
+		status = status
+	}
 
-  return info
+	return info
 end
 
 function MediaPlayer:watch(refresh_rate)
